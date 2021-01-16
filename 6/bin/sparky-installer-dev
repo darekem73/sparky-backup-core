@@ -37,7 +37,7 @@ fi
 (( M=$K*$K ))
 (( G=$K*$K*$K ))
 DEFAULT_EFIPARTSIZE=300
-DEFAULT_BOOTPARTSIZE=500
+DEFAULT_BOOTPARTSIZE=1000
 DEFAULT_SWAP_SIZE_G=1
 (( DEFAULT_SWAP_SIZE=$DEFAULT_SWAP_SIZE_G*$G ))
 MIN_PART_SIZE=8 # G
@@ -2363,6 +2363,10 @@ FOO
 	rm -f /TARGET/tmp/efi-install
 	rm -rf /TARGET/debs
 	rm -f /TARGET/usr/sbin/grub-probe
+	# install default boot option for uefi systems that require it
+	mkdir -p /TARGET/boot/efi/EFI/boot
+	install -D /TARGET/boot/efi/EFI/sparky/grubx64.efi /TARGET/boot/efi/EFI/boot/bootx64.efi
+	
 	mv /TARGET/usr/sbin/grub-probe.bak /TARGET/usr/sbin/grub-probe
 	if [ ! -d /TARGET/usr/share/doc/grub-efi ]; then
 		echo "Installation grub-efi failed"
@@ -2398,6 +2402,9 @@ FOO
 			rm -rf /TARGET/debs
 			mkdir -p /TARGET/boot/efi/EFI/debian
 			cp /TARGET/boot/efi/EFI/sparky/* /TARGET/boot/efi/EFI/debian/
+			# install default boot option for uefi systems that require it
+			#mkdir -p /TARGET/boot/efi/EFI/boot
+			#install -D /TARGET/boot/efi/EFI/sparky/grubx64.efi /TARGET/boot/efi/EFI/boot/bootx64.efi
 			if [ ! -d /TARGET/usr/share/doc/grub-efi-amd64-signed ]; then
 				echo "Installation grub-efi-signed failed"
 				echo "Installation grub-efi-signed failed" >> /var/log/sparkylinux-installer.log
